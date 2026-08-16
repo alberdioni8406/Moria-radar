@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocol & Deployment Info — Moria Radar</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header id="site-header"></header>
+
+<main>
+  <h1 style="margin-bottom:2px;">Protocol & Deployment Info</h1>
+  <p style="color: var(--text-dim); font-size: 0.9rem; margin-top:0;">
+    This page exists to make Moria Radar auditable — every identifier and data source is listed here.
+  </p>
+
+  <p class="section-title">Moria V1</p>
+  <table class="status-table">
+    <tr><td>Token ID</td><td class="mono" id="v1-token-id" style="font-size:0.75rem;"></td></tr>
+    <tr><td>Decimals</td><td id="v1-decimals"></td></tr>
+    <tr><td>Oracle</td><td class="mono" id="v1-oracle-id" style="font-size:0.75rem;"></td></tr>
+    <tr><td>Status</td><td id="v1-status" style="color: var(--red);"></td></tr>
+  </table>
+
+  <p class="section-title">Moria V2</p>
+  <table class="status-table">
+    <tr><td>Status</td><td id="v2-status"></td></tr>
+  </table>
+
+  <p class="section-title">Source code</p>
+  <p><a id="source-repo-link" href="#" target="_blank" rel="noopener">Riften Labs Moria repository (GitLab) ↗</a></p>
+
+  <p class="section-title">Documentation</p>
+  <p><a id="official-docs-link" href="#" target="_blank" rel="noopener">Riften Labs documentation ↗</a></p>
+
+  <p class="section-title">Data sources</p>
+  <ul class="data-source-list" id="data-sources-list"></ul>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script type="module" src="js/pages/protocol.js"></script>
+</body>
+</html>

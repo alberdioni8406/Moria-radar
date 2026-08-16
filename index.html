@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moria Radar — Live MUSD & Moria Analytics on Bitcoin Cash</title>
+<meta name="description" content="Independent analytics, recovery monitoring and historical intelligence for Moria Protocol.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header id="site-header"></header>
+
+<main>
+  <div class="status-banner">
+    <h1>🔴 MORIA V1 — DISABLED</h1>
+    <p>Security incident mitigated. MUSD recovery/conversion monitoring remains available.</p>
+    <p>Riften Labs reports that no user funds were affected — this has not been independently verified by Moria Radar. See the <a href="incident.html">Incident page</a> for the full timeline.</p>
+  </div>
+
+  <div class="search-bar">
+    <form id="global-search-form" style="display:flex; gap:8px; flex:1;">
+      <input id="global-search-input" type="text" placeholder="Search loan hash, tx ID, token ID, or address…">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <div id="dashboard-cards"></div>
+
+  <p class="section-title">Recovery & market</p>
+  <p style="color: var(--text-dim); font-size: 0.9rem;">
+    See <a href="buyback.html">MUSD Recovery Monitor</a>, <a href="supply.html">Supply</a>, and
+    <a href="market.html">Market</a> pages for detail.
+  </p>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script type="module" src="js/pages/dashboard.js"></script>
+</body>
+</html>

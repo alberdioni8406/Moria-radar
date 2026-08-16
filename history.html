@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moria V1 Loan Archive — Moria Radar</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header id="site-header"></header>
+
+<main>
+  <h1 style="margin-bottom:2px;">Moria V1 Loan Archive</h1>
+  <p style="color: var(--text-dim); font-size: 0.9rem; margin-top:0;">
+    Historical V1 loan activity — this is an archive, not an active-loans view. V1 is disabled.
+  </p>
+
+  <div class="search-bar">
+    <form id="global-search-form" style="display:flex; gap:8px; flex:1;">
+      <input id="global-search-input" type="text" placeholder="Search by borrower hash…">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <div id="history-table"></div>
+
+  <div id="loan-detail" hidden style="margin-top: 20px;"></div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script type="module" src="js/pages/history.js"></script>
+</body>
+</html>

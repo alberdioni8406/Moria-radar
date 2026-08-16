@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUSD Recovery Monitor — Moria Radar</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header id="site-header"></header>
+
+<main>
+  <h1 style="margin-bottom:2px;">MUSD Recovery Monitor</h1>
+  <p style="color: var(--text-dim); font-size: 0.9rem; margin-top:0;">
+    Riften Labs has stated it will buy back MUSD, starting <strong id="buyback-start"></strong>,
+    for a minimum commitment of 6 months.
+  </p>
+
+  <div class="card-grid" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Buyback</span><span class="tag tag-current">CURRENT</span></div>
+      <div class="card-value" style="color: var(--green);">ACTIVE</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Minimum commitment period end</span></div>
+      <div class="card-value" id="buyback-min-end" style="font-size:1.1rem;"></div>
+      <div class="card-subtext">This does not necessarily mean the program ends on this date.</div>
+    </div>
+  </div>
+
+  <p class="section-title">Recovery metrics</p>
+  <div id="recovery-stats"></div>
+
+  <p class="section-title">MUSD → BCH activity</p>
+  <div id="recovery-feed"></div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script type="module" src="js/pages/buyback.js"></script>
+</body>
+</html>

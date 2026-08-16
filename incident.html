@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moria V1 Security Incident — Moria Radar</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header id="site-header"></header>
+
+<main>
+  <h1 style="margin-bottom:2px;">Moria V1 Security Incident</h1>
+  <p style="color: var(--text-dim); font-size: 0.9rem; margin-top:0;">
+    This is an information/analytics page, not a security audit. Dates below are calendar dates; exact timestamps
+    were not available at time of writing. Verify against official sources linked below.
+  </p>
+
+  <div class="incident-timeline">
+    <div class="incident-event">
+      <div class="incident-date">23 April 2026</div>
+      <div class="incident-desc">Security vulnerability identified/reported in Moria V1.</div>
+    </div>
+    <div class="incident-event">
+      <div class="incident-date">23 April 2026</div>
+      <div class="incident-desc">Vulnerability confirmed by Riften Labs.</div>
+    </div>
+    <div class="incident-event">
+      <div class="incident-date">23 April 2026</div>
+      <div class="incident-desc">Oracle halted; V1 shutdown process initiated.</div>
+    </div>
+    <div class="incident-event">
+      <div class="incident-date">23 April 2026</div>
+      <div class="incident-desc">Outstanding loans redeemed.</div>
+    </div>
+    <div class="incident-event">
+      <div class="incident-date">23 April 2026</div>
+      <div class="incident-desc">Moria V1 disabled.</div>
+    </div>
+    <div class="incident-event">
+      <div class="incident-date">May 2026</div>
+      <div class="incident-desc">Replacement d3lphi/oracle infrastructure deployed/activated (unconfirmed pending source verification — see Oracle page).</div>
+    </div>
+  </div>
+
+  <p class="section-title">Sources</p>
+  <ul>
+    <li><a href="https://docs.riftenlabs.com/moria/" target="_blank" rel="noopener">Riften Labs Moria documentation ↗</a></li>
+    <li><a href="https://gitlab.com/riftenlabs/moria" target="_blank" rel="noopener">Moria source repository (GitLab) ↗</a></li>
+    <li><a href="https://www.moria.money/" target="_blank" rel="noopener">Official Moria site ↗</a></li>
+  </ul>
+
+  <div class="fatal-error" style="color: var(--text-dim); background: var(--bg-elevated); border-color: var(--border);">
+    Moria Radar could not independently verify every timestamp above from a live, queryable source at build time.
+    Before relying on this timeline, cross-check it against the official documentation and repository linked above.
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script type="module" src="js/pages/incident.js"></script>
+</body>
+</html>
