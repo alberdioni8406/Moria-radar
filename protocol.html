@@ -19,13 +19,20 @@
   <table class="status-table">
     <tr><td>Token ID</td><td class="mono" id="v1-token-id" style="font-size:0.75rem;"></td></tr>
     <tr><td>Decimals</td><td id="v1-decimals"></td></tr>
-    <tr><td>Oracle</td><td class="mono" id="v1-oracle-id" style="font-size:0.75rem;"></td></tr>
     <tr><td>Status</td><td id="v1-status" style="color: var(--red);"></td></tr>
   </table>
 
-  <p class="section-title">Moria V2</p>
+  <p class="section-title">Moria V2 (lending protocol)</p>
   <table class="status-table">
     <tr><td>Status</td><td id="v2-status"></td></tr>
+  </table>
+
+  <p class="section-title">Delphi Oracle (BCH/USD feed — separate from Moria V2 lending status above)</p>
+  <table class="status-table">
+    <tr><td>Delphi V1</td><td class="mono" id="oracle-v1-id" style="font-size:0.7rem;"></td></tr>
+    <tr><td>Delphi V1 status</td><td id="oracle-v1-status" style="color: var(--text-dim);"></td></tr>
+    <tr><td>Delphi V2</td><td class="mono" id="oracle-v2-id" style="font-size:0.7rem;"></td></tr>
+    <tr><td>Delphi V2 status</td><td id="oracle-v2-status" style="color: var(--green);"></td></tr>
   </table>
 
   <p class="section-title">Source code</p>
