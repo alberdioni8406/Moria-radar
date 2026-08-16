@@ -5,51 +5,71 @@
 // ---------------------------------------------------------------------------
 // DATA SOURCE REGISTRY
 // ---------------------------------------------------------------------------
-// NOTE ON VERIFICATION: These endpoints are transcribed from the Moria Radar
-// project brief and public Riften Labs documentation (docs.riftenlabs.com).
-// They have NOT been live-tested from this build environment (no outbound
-// network access at build time). Before deploying, run the checks in
-// DATA_MAP.md / README.md "Verification" section against the real endpoints,
-// since the brief itself flags the Moria indexer routes as unstable.
+// Verified against the real Riften Labs Indexer API docs at
+// https://docs.riftenlabs.com/cauldron/API/ (pages: /cauldron/, /moria/,
+// /oracle/) on 2026-08-16. All three live under one host, indexer.riften.net,
+// split by path prefix — not separate hosts. Endpoint shapes, param names,
+// and "Stable"/"Unstable" status below are taken directly from that page;
+// where a JSON shape wasn't documented (most /moria endpoints), the code
+// still treats the response defensively rather than assuming a schema.
 export const DATA_SOURCES = {
   moriaIndexer: {
     label: "Riften Labs Indexer — Moria",
     baseUrl: "https://indexer.riften.net/moria",
     endpoints: {
+      // GET /history?offset=&limit=&nfth=  (Unstable, no documented response schema)
       history: "/history",
+      // GET /loan/<borrower_hash>/history — array of {borrow,repay,redeem,refinance,add_collateral} actions
       loanHistory: (borrowerHash) => `/loan/${borrowerHash}/history`,
-      activeLoans: "/loans/active",
-      stats: "/stats"
+      activeLoans: "/loans/active", // Unstable
+      stats: "/stats" // Unstable
     },
     auth: "none",
-    stability: "documented as unstable — always handle non-200 and malformed responses",
-    docs: "https://docs.riftenlabs.com/moria/"
+    stability: "All /moria endpoints are documented as Unstable — always handle non-200 and malformed responses",
+    docs: "https://docs.riftenlabs.com/cauldron/API/moria/"
   },
   cauldron: {
     label: "Riften Labs Indexer — Cauldron",
     baseUrl: "https://indexer.riften.net/cauldron",
     endpoints: {
-      tokenPrice: (tokenId) => `/token/${tokenId}/price`,
-      tokenHistory: (tokenId) => `/token/${tokenId}/history`,
-      pools: "/pools"
+      // Price is returned per SMALLEST UNIT of the token (e.g. cents-equivalent
+      // for a 2-decimal token), denominated in BCH satoshis. Convert with
+      // js/calculations/pricing.js:tokenSatPriceToUsd().
+      priceCurrent: (tokenId) => `/price/${tokenId}/current`, // Stable
+      priceAt: (tokenId, timestamp) => `/price/${tokenId}/at/${timestamp}`, // Stable
+      priceHistory: (tokenId) => `/price/${tokenId}/history`, // Unstable — {avg,min,max,time}[]
+      priceCandlesticks: (tokenId) => `/price/${tokenId}/candlesticks`, // Unstable — OHLC in sats
+      valueLocked: (tokenId) => `/valuelocked/${tokenId}`, // Stable — {satoshis, token_amount, token_id}
+      volume: (tokenId) => `/volume/${tokenId}`, // Stable — {volume_sats, volume_tokens, period_start, period_end}
+      txLatest: "/tx/latest", // Stable — ?limit=&offset=&token=
+      poolActive: "/pool/active", // Unstable — ?token_a=&token_b=
+      contractCount: (tokenId) => `/contract/count/${tokenId}`, // Stable
+      tokenFirstPool: (tokenId) => `/token/${tokenId}/first_pool` // Unstable
     },
     auth: "none",
-    docs: "https://docs.riftenlabs.com/cauldron/",
+    docs: "https://docs.riftenlabs.com/cauldron/API/cauldron/",
     externalDashboard: "https://cauldron-radar.vercel.app"
   },
   oracle: {
-    label: "d3lphi Oracle",
-    // The project brief and most community references spell this "Delphi";
-    // Riften Labs' own docs (docs.riftenlabs.com/moria/d3lphi/) spell the
-    // contract/oracle "d3lphi". Both names are shown in the UI so the
-    // discrepancy is visible rather than silently "corrected".
+    label: "Delphi Oracle",
+    // Correction: the project brief called this "d3lphi"; Riften Labs' current
+    // API docs and product naming consistently use "Delphi". The underlying
+    // GitLab contract repo (gitlab.com/riftenlabs/moria/oracle-contract) is
+    // internally named "d3lphi-oracle", but the live product/API surface is
+    // "Delphi" — that's what's used throughout this app now.
     baseUrl: "https://indexer.riften.net/oracle",
     endpoints: {
-      latest: (oracleId) => `/${oracleId}/latest`,
-      history: (oracleId) => `/${oracleId}/history`
+      // BCH/USD spot feed, independent of any specific token
+      cashClosest: "/cash/closest", // Unstable — ?timestamp=
+      cashHistory: "/cash/history", // Unstable — ?start=&end=&stepsize=
+      // Per-oracle-contract feed (used for both the retired V1 and live V2
+      // BCH/USD contracts, and could be reused for a future MUSD-specific
+      // oracle if Riften Labs ever ships one)
+      delphiHistory: (oracleTokenId) => `/delphi/${oracleTokenId}/history`, // Unstable — ?start=&end=&stepsize=
+      delphiClosest: "/delphi/closest" // Stable — ?token_id=&timestamp=
     },
     auth: "none",
-    docs: "https://docs.riftenlabs.com/moria/d3lphi/"
+    docs: "https://docs.riftenlabs.com/cauldron/API/oracle/"
   },
   blockchain: {
     label: "Haskoin Store (BCH)",
@@ -70,7 +90,9 @@ export const DATA_SOURCES = {
 
 // ---------------------------------------------------------------------------
 // MORIA DEPLOYMENTS — extend this object (never rewrite the app) when a new
-// deployment (e.g. Moria V2) is confirmed with real, verified identifiers.
+// LENDING deployment (e.g. Moria V2) is confirmed with real, verified
+// identifiers. Do not conflate this with oracle versioning below — a live
+// Delphi V2 price feed does not imply a Moria V2 lending protocol exists.
 // ---------------------------------------------------------------------------
 export const MORIA_DEPLOYMENTS = {
   v1: {
@@ -81,9 +103,6 @@ export const MORIA_DEPLOYMENTS = {
     tokenSymbol: "MUSD",
     tokenName: "Moria USD",
     tokenDecimals: 2,
-    oracleId: "d0d46f5cbd82188acede0d3e49c75700c19cb8331a30101f0bb6a260066ac972",
-    oracleName: "d3lphi V1 (\"Delphi V1\")",
-    oracleStatus: "retired",
     incidentDate: "2026-04-23",
     buybackStartDate: "2026-04-23",
     buybackMinMonths: 6
@@ -93,9 +112,33 @@ export const MORIA_DEPLOYMENTS = {
     status: "not_deployed",
     statusLabel: "NOT CURRENTLY DEPLOYED",
     tokenId: null,
-    tokenSymbol: null,
-    oracleId: null,
-    oracleStatus: null
+    tokenSymbol: null
+  }
+};
+
+// ---------------------------------------------------------------------------
+// ORACLES — Delphi BCH/USD price-feed contracts. Verified against
+// https://docs.riftenlabs.com/cauldron/API/oracle/ (2026-08-16). This is a
+// separate axis from MORIA_DEPLOYMENTS: Delphi V2 being live and current does
+// NOT mean a Moria V2 lending protocol is deployed — it's the general-purpose
+// BCH/USD feed Moria (and other Riften Labs products) read collateral prices
+// from. MUSD's own market price (what it trades for) is a different number,
+// sourced from Cauldron via DATA_SOURCES.cauldron, not from this oracle.
+// ---------------------------------------------------------------------------
+export const ORACLES = {
+  delphiV1: {
+    name: "Delphi V1",
+    tokenId: "d0d46f5cbd82188acede0d3e49c75700c19cb8331a30101f0bb6a260066ac972",
+    status: "retired",
+    statusLabel: "RETIRED",
+    note: "Legacy BCH/USD feed — no longer updated. Was the oracle Moria V1 read collateral prices from until the April 2026 incident."
+  },
+  delphiV2: {
+    name: "Delphi V2",
+    tokenId: "be0d0d8324e8cda41d34b85bd203ce2482256eb337a0ad0fea82c2ddd7306c88",
+    status: "active",
+    statusLabel: "ACTIVE",
+    note: "Current, live BCH/USD feed. Confirmed via docs.riftenlabs.com — this is the general Delphi price oracle, not a Moria-specific or MUSD-specific price."
   }
 };
 
@@ -110,7 +153,7 @@ export const CLASSIFICATION = {
 // Replace with the real project donation address before deploying.
 // NEVER invent a real-looking address — this placeholder must be visibly
 // a placeholder until the owner supplies the real one.
-export const DONATION_BCH_ADDRESS = "bitcoincash:qrtv37u522gz8a5lezfqk5vukly93cu7gc8tn09040";
+export const DONATION_BCH_ADDRESS = "REPLACE_WITH_YOUR_BCH_DONATION_ADDRESS";
 
 export const CACHE_TTL_MS = {
   livePrice: 20_000,
