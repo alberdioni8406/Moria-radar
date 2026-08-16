@@ -1,6 +1,6 @@
 // js/pages/history.js
 import { mountShell } from "../app.js";
-import { fetchMoriaHistory, fetchLoanHistory } from "../api/moria.js";
+import { fetchFullMoriaHistory, fetchLoanHistory } from "../api/moria.js";
 import { renderTable, statusBadge } from "../components/tables.js";
 import { formatNumber } from "../calculations/statistics.js";
 
@@ -15,8 +15,7 @@ const query = params.get("q");
 
 async function loadArchive() {
   try {
-    const { data, stale } = await fetchMoriaHistory();
-    const events = Array.isArray(data) ? data : data.events || [];
+    const { events, stale } = await fetchFullMoriaHistory();
 
     // Group events into per-loan rows keyed by borrowerHash.
     const byBorrower = new Map();
