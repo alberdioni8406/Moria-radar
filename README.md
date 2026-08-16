@@ -4,7 +4,7 @@
 Independent analytics, recovery monitoring and historical intelligence for Moria Protocol.
 
 Moria Radar is **not** the official Moria interface. It is an independent, non-custodial analytics dashboard
-for Moria Protocol / MUSD on Bitcoin Cash, built in the same style as [Cauldron Radar](https://cauldron-radar.vercel.app).
+for Moria Protocol / MUSD on Bitcoin Cash, built in the same style as [Cauldron Radar](https://cauldronradar.cash).
 
 ## ⚠️ Current status: Moria V1 is disabled
 
