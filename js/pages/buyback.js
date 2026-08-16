@@ -1,7 +1,7 @@
 // js/pages/buyback.js
 import { mountShell } from "../app.js";
 import { MORIA_DEPLOYMENTS, CLASSIFICATION } from "../config.js";
-import { fetchMoriaHistory } from "../api/moria.js";
+import { fetchFullMoriaHistory } from "../api/moria.js";
 import { renderCard, renderCardGrid } from "../components/cards.js";
 import { renderActivityFeed } from "../components/activity.js";
 import { recoveryStats, buybackWindow, volumeInWindow } from "../calculations/recovery.js";
@@ -19,8 +19,7 @@ feedContainer.innerHTML = `<div class="table-empty">Loading recovery activity…
 
 async function load() {
   try {
-    const { data, stale } = await fetchMoriaHistory();
-    const events = Array.isArray(data) ? data : data.events || [];
+    const { events, stale } = await fetchFullMoriaHistory();
     const conversions = events.filter((e) => e.type === "redeem");
 
     const stats = recoveryStats(conversions);
