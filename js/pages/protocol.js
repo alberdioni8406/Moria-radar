@@ -1,14 +1,17 @@
 // js/pages/protocol.js
 import { mountShell } from "../app.js";
-import { MORIA_DEPLOYMENTS, DATA_SOURCES, SITE } from "../config.js";
+import { MORIA_DEPLOYMENTS, ORACLES, DATA_SOURCES, SITE } from "../config.js";
 
 mountShell("protocol.html");
 
 document.getElementById("v1-token-id").textContent = MORIA_DEPLOYMENTS.v1.tokenId;
 document.getElementById("v1-decimals").textContent = MORIA_DEPLOYMENTS.v1.tokenDecimals;
-document.getElementById("v1-oracle-id").textContent = MORIA_DEPLOYMENTS.v1.oracleId;
 document.getElementById("v1-status").textContent = MORIA_DEPLOYMENTS.v1.statusLabel;
 document.getElementById("v2-status").textContent = MORIA_DEPLOYMENTS.v2.statusLabel;
+document.getElementById("oracle-v1-id").textContent = ORACLES.delphiV1.tokenId;
+document.getElementById("oracle-v1-status").textContent = ORACLES.delphiV1.statusLabel;
+document.getElementById("oracle-v2-id").textContent = ORACLES.delphiV2.tokenId;
+document.getElementById("oracle-v2-status").textContent = ORACLES.delphiV2.statusLabel;
 
 const sourcesList = document.getElementById("data-sources-list");
 sourcesList.innerHTML = Object.entries(DATA_SOURCES)
