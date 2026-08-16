@@ -110,7 +110,7 @@ export const CLASSIFICATION = {
 // Replace with the real project donation address before deploying.
 // NEVER invent a real-looking address — this placeholder must be visibly
 // a placeholder until the owner supplies the real one.
-export const DONATION_BCH_ADDRESS = "REPLACE_WITH_YOUR_BCH_DONATION_ADDRESS";
+export const DONATION_BCH_ADDRESS = "bitcoincash:qrtv37u522gz8a5lezfqk5vukly93cu7gc8tn09040";
 
 export const CACHE_TTL_MS = {
   livePrice: 20_000,
