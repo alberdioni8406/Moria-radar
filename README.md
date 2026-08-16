@@ -4,7 +4,7 @@
 Independent analytics, recovery monitoring and historical intelligence for Moria Protocol.
 
 Moria Radar is **not** the official Moria interface. It is an independent, non-custodial analytics dashboard
-for Moria Protocol / MUSD on Bitcoin Cash, built in the same style as [Cauldron Radar](https://cauldronradar.cash).
+for Moria Protocol / MUSD on Bitcoin Cash, built in the same style as [Cauldron Radar](https://cauldron-radar.vercel.app).
 
 ## ⚠️ Current status: Moria V1 is disabled
 
@@ -47,27 +47,44 @@ moria-radar/
 ## Data sources
 
 All external endpoints live in `js/config.js` under `DATA_SOURCES` — nothing else in the app should hardcode
-a URL. See `DATA_MAP.md` for the full metric-by-metric mapping.
+a URL. See `DATA_MAP.md` for the full metric-by-metric mapping. Endpoint paths, params, and stability
+(Stable/Unstable) are verified against the real Riften Labs Indexer API docs at
+`docs.riftenlabs.com/cauldron/API/` — all three indexer families below share one host, `indexer.riften.net`,
+split by path prefix.
 
-- **Riften Labs Moria indexer** (`indexer.riften.net/moria`) — loan history, active loans, stats. Documented
-  by the project brief as *unstable*; every call is wrapped so failures render "Data temporarily unavailable"
-  rather than fabricated numbers.
-- **Riften Labs Cauldron indexer** (`indexer.riften.net/cauldron`) — MUSD market price/history.
-- **d3lphi oracle indexer** — V1 (retired) metadata only; a confirmed replacement oracle can be wired in via
-  `MORIA_DEPLOYMENTS.v2.oracleId`.
+- **`/moria`** — loan history, active loans, stats. All four endpoints are documented **Unstable**; every
+  call is wrapped so failures render "Data temporarily unavailable" rather than fabricated numbers.
+- **`/cauldron`** — MUSD market data: current/historical price, candlesticks, TVL, volume, recent trades,
+  active pools. Price is returned in BCH satoshis per smallest token unit — convert with
+  `js/calculations/pricing.js:tokenSatPriceToUsd()`.
+- **`/oracle`** — the Delphi BCH/USD price feed. **Delphi V1** (`d0d46f5c...`) is legacy and no longer
+  updated. **Delphi V2** (`be0d0d83...`) is the current, live feed — confirmed via the docs, not speculative.
+  This is a general BCH/USD feed (what Moria reads collateral prices from), not an MUSD-specific price; MUSD's
+  own market price comes from `/cauldron` instead.
 - **Haskoin Store** (`api.haskoin.com/bch`) — raw BCH chain lookups.
-- **CoinPaprika** — BCH/USD spot price.
+- **CoinPaprika** — BCH/USD spot price (used for sats→USD conversion; Riften Labs' own `/oracle/cash/closest`
+  could replace this but isn't wired in yet — see DATA_MAP.md).
 - **bchexplorer.cash** — transaction/address explorer links.
+
+### A naming note
+
+The project's oracle GitLab repo is `gitlab.com/riftenlabs/moria/oracle-contract`, internally named
+`d3lphi-oracle`. Riften Labs' live API docs and product surface consistently call it **Delphi**, so that's
+the name used throughout this app.
 
 ## ⚠️ Verification before deployment
 
-The endpoint paths above are transcribed from the project brief / `docs.riftenlabs.com` and were **not**
-live-tested from this build environment (no outbound network access at build time). Before deploying:
+The `/cauldron` and `/oracle` endpoint paths, params, and response shapes are transcribed from real, published
+docs (`docs.riftenlabs.com/cauldron/API/`) and are reasonably trustworthy. The `/moria` endpoints are
+documented as **Unstable** with no published example response — those still need a live check. None of this
+was live-tested from this build environment (no outbound network access at build time). Before deploying:
 
-- [ ] Hit each `moriaIndexer` endpoint directly and confirm it returns 200 with the expected JSON shape
-- [ ] Adjust field-name parsing in `js/pages/*.js` if the real response uses different key names
-- [ ] Confirm the MUSD token ID and decimals against on-chain/CashToken metadata
+- [ ] Hit each `/moria` endpoint directly and confirm the actual JSON field names, then adjust parsing in
+      `js/calculations/supply.js` / `js/pages/history.js` / `js/pages/buyback.js` if they differ
+- [ ] Confirm the MUSD token ID and decimals (`b38a33f7...`, 2 decimals) against on-chain/CashToken metadata
 - [ ] Confirm whether `redeem` events in `/moria/history` distinguish buyback redemptions from ordinary ones
+- [ ] Confirm the `/cauldron/pool/active` paired-token id convention for BCH before wiring up a pools page
+- [ ] Spot-check the sats→USD price conversion (`tokenSatPriceToUsd`) against a manually verified MUSD price
 - [ ] Test direct navigation to every page (not just via nav links) on the deployed Vercel URL
 - [ ] Test on narrow mobile width and confirm no horizontal overflow
 - [ ] Confirm no CORS errors from `indexer.riften.net`, `api.haskoin.com`, or `api.coinpaprika.com`
